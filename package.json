@@ -1,0 +1,20 @@
+{
+  "name": "playlist-gen",
+  "version": "0.0.1",
+  "description": "Playlist generator in NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gpkc/playlist-gen.git"
+  },
+  "author": "Guilherme Caminha <gpkc@cin.ufpe.br>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gpkc/playlist-gen/issues"
+  },
+  "homepage": "https://github.com/gpkc/playlist-gen#readme",
+  "private": "true"
+}

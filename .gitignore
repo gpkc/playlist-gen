@@ -1,3 +1,6 @@
+# Our Dataset
+lastfm_similars.db
+
 # Logs
 logs
 *.log
