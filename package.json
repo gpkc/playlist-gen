@@ -4,6 +4,7 @@
   "description": "Playlist generator in NodeJS",
   "main": "index.js",
   "scripts": {
+    "start": "node --max-old-space-size=12288 preprocess.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,11 @@
     "url": "https://github.com/gpkc/playlist-gen/issues"
   },
   "homepage": "https://github.com/gpkc/playlist-gen#readme",
-  "private": "true"
+  "private": "true",
+  "dependencies": {
+    "ml-sparse-matrix": "^0.2.1",
+    "ngraph.graph": "0.0.12",
+    "ngraph.louvain": "^1.0.1",
+    "sqlite3": "^3.1.4"
+  }
 }
