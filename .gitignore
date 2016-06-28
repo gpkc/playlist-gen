@@ -1,5 +1,8 @@
-# Our Dataset
-lastfm_similars.db
+venv/
+
+# Our Datasets
+*.db
+*.txt
 
 # Logs
 logs
