@@ -1,3 +1,5 @@
+venv/
+
 # Our Datasets
 *.db
 *.txt
