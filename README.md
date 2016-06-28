@@ -10,5 +10,9 @@ To get the server running for testing, do these steps:
 
 1.  Grab the [similarity](http://labrosa.ee.columbia.edu/millionsong/sites/default/files/lastfm/lastfm_similars.db) table from the Million Song Dataset and place it in the DB folder.
 2.  In the project folder, run `npm install` to install all the dependencies.
-3.  Run `npm start`.
-4.  Browse to `127.0.0.1:8000`.
+3.  Run `npm run preprocessjs`
+4.  Install the pip packages: `Flask`, `Flask-Cors`, `scipy`, `networkx`, `python-louvain`.
+5.  Run `npm run preprocesspy`.
+6.  Run `npm run startjs`.
+7.  Run `npm run startpy`.
+8.  Browse to `127.0.0.1:8000`.
