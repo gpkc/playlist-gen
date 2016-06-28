@@ -4,49 +4,54 @@ const detectClusters = require('ngraph.louvain');
 const sqlite3 = require('sqlite3').verbose();
 
 const similars = new sqlite3.Database('lastfm_similars.db', [sqlite3.OPEN_READONLY]);
+const songs = new sqlite3.Database('songs_index.db'); // Songs indexes and partition
+
+const storeSongsUidAndClusters = function(graph, clusters) {
+	songs.serialize(function() {
+		songs.run('DROP TABLE IF EXISTS Songs;');
+		songs.run('CREATE TABLE Songs(tid TEXT, idx INT, com INT);');
+		songs.run('BEGIN;');
+		let idx = 0;
+                graph.forEachNode(function(node) {
+                        node.data = idx++;
+                        songs.exec(`INSERT INTO Songs (tid, idx, com) VALUES ('${node.id}', ${node.data}, ${clusters.getClass(node.id)});`);
+                });
+		songs.run('COMMIT;');
 
 
-const storeSongsUidAndClusters = function(graph, nodes) {
-	//TODO
-}
+		songs.run('DROP TABLE IF EXISTS Links;');
+		songs.run('CREATE TABLE Links(fromId INT, toId INT, w REAL);');
+                songs.run('BEGIN;');
+		graph.forEachLink(function(link) {
+			let fromId = graph.getNode(link.fromId).data;
+			let toId = graph.getNode(link.toId).data;
+			songs.exec(`INSERT INTO Links (fromId, toId, w) VALUES (${fromId}, ${toId}, ${link.data});`);
+		});
+                songs.run('COMMIT;');
+	});
+};
 
-const allSongsUidAndClusterize = function() {
-	let nodes = new Map();
-
-	let idx = 0;
+const allSongsClusterize = function() {
+	let graph = graphFactory();
 	similars.each(
 		'SELECT tid, target FROM similars_src;',
 		function(err, row) {
-			let row_id = -1;
-			if(!nodes.has(row['tid'])) {
-				row_id = idx++;
-				nodes.set(row['tid'], row_id);
-			} else {
-				row_id = nodes.get(row['tid']);
-			}
-
 			let similars = row['target'].split(',');
 			for (let i = 0; i < similars.length; i += 2) {
-				let similar_id = -1;
-				if(!nodes.has(similars[i])) {
-					similar_id = idx++;
-					nodes.set(similars[i], similar_id);
-				} else  {
-					similar_id = nodes.get(similars[i]);
-				}
 				if(similars[i+1] > 0.5) {
-					graph.addLink(row_id, similar_id);
+					graph.addLink(row['tid'], similars[i], similars[i+1]);
 				}
 			}
+
 		},
 		function(err, rows) {
-			console.log('n rows: ', + rows);
-			console.log('n nodes: ', nodes.size);
+			console.log('clusterizing ' + graph.getNodesCount() + ' nodes...');
 			let clusters = detectClusters(graph);
+			storeSongsUidAndClusters(graph, clusters);
 		}
 	);
-}
-allSongsUidAndClusterize();
+};
+allSongsClusterize();
 
 
 
